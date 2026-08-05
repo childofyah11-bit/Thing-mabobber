@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Thing-mabobber</title>
-  <!-- Tailwind CSS via CDN -->
+  <!-- Tailwind CSS via CDN for clean, immediate styling layout -->
   <script src="https://tailwindcss.com"></script>
-  <!-- FontAwesome for clean icons -->
+  <!-- FontAwesome for the video drop icon -->
   <link rel="stylesheet" href="https://cloudflare.com">
   <style>
     /* Purple and white checkered dashed border accent at the top */
@@ -17,184 +17,102 @@
       background-repeat: repeat-x;
       background-position: top left, bottom left;
     }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans min-h-screen transition-colors duration-200 dark:bg-slate-900 dark:text-slate-100">
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen dark:bg-slate-900 dark:text-slate-100">
 
   <!-- Checkered Dashed Top Border -->
   <div class="top-dashed-border w-full"></div>
 
-  <!-- Header Navigation -->
+  <!-- Header Header Layout -->
   <header class="bg-white border-b border-slate-200 dark:bg-slate-800 dark:border-slate-700 shadow-sm sticky top-0 z-50">
-    <div class="max-w-4xl mx-auto px-4">
-      <div class="flex items-center justify-between py-3">
-        <!-- Branding Title -->
-        <div class="flex items-center space-x-2 font-bold text-xl text-indigo-600 dark:text-indigo-400">
-          <i class="fa-solid fa-crosshairs text-red-500 animate-pulse"></i>
-          <span>Thing-mabobber</span>
-        </div>
-
-        <!-- Global Utilities Quickbar -->
-        <div class="flex items-center space-x-3">
-          <button id="themeToggle" class="p-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-700" title="Toggle Light/Dark Theme">
-            <i id="themeIcon" class="fa-solid fa-moon text-lg"></i>
-          </button>
-          <button id="manualSaveBtn" class="p-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-700" title="Force Save State">
-            <i class="fa-solid fa-floppy-disk text-lg"></i>
-          </button>
-        </div>
-      </div>
-
-      <!-- Navigation Selection Track -->
-      <div class="flex space-x-2 py-2 border-t border-slate-100 dark:border-slate-700 text-sm font-medium">
-        <button onclick="switchTab('videos')" id="tab-videos" class="tab-btn px-4 py-2 rounded-md bg-indigo-600 text-white flex items-center space-x-1"><i class="fa-solid fa-clapperboard"></i> <span>Videos</span></button>
-        <button onclick="switchTab('qrcode')" id="tab-qrcode" class="tab-btn px-4 py-2 rounded-md text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700 flex items-center space-x-1"><i class="fa-solid fa-qrcode"></i> <span>QR Code</span></button>
+    <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+      <!-- Branding Title -->
+      <div class="flex items-center space-x-2 font-bold text-xl text-indigo-600 dark:text-indigo-400">
+        <i class="fa-solid fa-crosshairs text-red-500 animate-pulse"></i>
+        <span>Thing-mabobber</span>
       </div>
     </div>
   </header>
 
-  <!-- Main View Container -->
+  <!-- Main View Workspace Container -->
   <main class="max-w-4xl mx-auto px-4 py-8">
+    <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-6">
+      <h2 class="text-xl font-bold flex items-center gap-2">
+        <i class="fa-solid fa-video text-indigo-500"></i> Video Player Workspace
+      </h2>
+      
+      <!-- Interactive Drag & Drop Area Interface Frame -->
+      <div id="videoDropZone" class="border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-xl p-12 text-center bg-slate-50 dark:bg-slate-900/50 hover:border-indigo-500 transition cursor-pointer">
+        <i class="fa-solid fa-video-camera text-5xl text-slate-400 mb-3"></i>
+        <p class="font-semibold text-lg">Drag & drop your local video file directly here</p>
+        <p class="text-xs text-slate-400 mt-2">Or click inside this frame container box to open your file manager</p>
+        <p class="text-xs text-indigo-500 mt-1 font-medium">Supports MP4, WebM, and OGG formats natively</p>
+        <input type="file" id="videoFileInput" accept="video/*" class="hidden">
+      </div>
 
-    <!-- TAB 1: VIDEOS MODULE -->
-    <div id="content-videos" class="tab-content active space-y-6">
-      <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
-        <h2 class="text-xl font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-video text-indigo-500"></i> Video Player</h2>
-        <div id="videoDropZone" class="border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-xl p-8 text-center bg-slate-50 dark:bg-slate-900/50 hover:border-indigo-500 transition cursor-pointer">
-          <i class="fa-solid fa-video-camera text-4xl text-slate-400 mb-2"></i>
-          <p class="font-semibold text-lg">Drop videos here or paste a YouTube/Direct URL stream link below</p>
-          <p class="text-xs text-slate-400 mt-1">Supports MP4, YouTube embeds, WebM formats natively</p>
-          <input type="file" id="videoFileInput" accept="video/*" class="hidden">
-        </div>
-        <div class="mt-4 flex gap-2">
-          <input type="text" id="videoUrlInput" placeholder="Paste YouTube URL or video link..." class="flex-1 px-4 py-2 border rounded-lg bg-transparent border-slate-300 dark:border-slate-600 outline-none focus:border-indigo-500">
-          <button onclick="loadVideoStream()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-6 py-2 rounded-lg transition">Load Video</button>
-        </div>
-        <div id="videoPlaybackWrapper" class="mt-6 hidden aspect-video w-full rounded-xl overflow-hidden bg-black shadow-inner"></div>
+      <!-- Video Target Stream Rendering Frame Wrapper Block -->
+      <div id="videoPlaybackWrapper" class="mt-6 hidden aspect-video w-full rounded-xl overflow-hidden bg-black shadow-inner border border-slate-200 dark:border-slate-700">
+        <!-- The video tag element is mounted inside here dynamically when dropped -->
       </div>
     </div>
-
-    <!-- TAB 2: QR CODE GENERATOR -->
-    <div id="content-qrcode" class="tab-content">
-      <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-4">
-        <h2 class="text-xl font-bold flex items-center gap-2"><i class="fa-solid fa-qrcode text-indigo-500"></i> QR Code Generator</h2>
-        <input type="text" id="qrTextInput" oninput="generateQrCode()" placeholder="Type text or a web link to create QR code automatically..." class="w-full px-4 py-2 border rounded-lg bg-transparent border-slate-300 dark:border-slate-600 outline-none focus:border-indigo-500">
-        <div class="flex justify-center">
-          <div class="p-4 bg-white rounded-lg shadow-inner border border-slate-100">
-            <img id="qrImageElement" src="https://qrserver.com" alt="QR Code" class="w-40 h-40 object-contain">
-          </div>
-        </div>
-      </div>
-    </div>
-
   </main>
 
   <script>
-    const STORAGE_KEY = 'thing_mabobber_final_state';
-
-    // Core state manager
-    let appState = {
-      darkMode: false,
-      lastQrText: 'ThingMabobber',
-      lastVideoUrl: ''
-    };
-
     window.addEventListener('DOMContentLoaded', () => {
-      loadStateFromPermanentMemory();
       setupVideoDragAndDropEngine();
     });
 
-    // Tab switcher layout tool
-    function switchTab(tabId) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.className = "tab-btn px-4 py-2 rounded-md text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700 flex items-center space-x-1";
-      });
-
-      document.getElementById(`content-${tabId}`).classList.add('active');
-      document.getElementById(`tab-${tabId}`).className = "tab-btn px-4 py-2 rounded-md bg-indigo-600 text-white flex items-center space-x-1";
-    }
-
-    // Save configurations permanently down into LocalStorage
-    function saveStateToPermanentMemory() {
-      appState.lastQrText = document.getElementById('qrTextInput').value;
-      appState.lastVideoUrl = document.getElementById('videoUrlInput').value;
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
-    }
-
-    // Pull configurations back on layout launch
-    function loadStateFromPermanentMemory() {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        try { appState = JSON.parse(stored); } catch (e) { console.error(e); }
-      }
-
-      // Rehydrate dark mode
-      if (appState.darkMode) {
-        document.documentElement.classList.add('dark');
-        document.getElementById('themeIcon').className = "fa-solid fa-sun text-lg";
-      }
-
-      // Rehydrate QR Generator data entries
-      document.getElementById('qrTextInput').value = appState.lastQrText || '';
-      generateQrCode();
-
-      // Rehydrate Video URL box
-      if (appState.lastVideoUrl) {
-        document.getElementById('videoUrlInput').value = appState.lastVideoUrl;
-        loadVideoStream();
-      }
-    }
-
-    // Theme switching component handler
-    document.getElementById('themeToggle').addEventListener('click', () => {
-      const isDark = document.documentElement.classList.toggle('dark');
-      appState.darkMode = isDark;
-      document.getElementById('themeIcon').className = isDark ? "fa-solid fa-sun text-lg" : "fa-solid fa-moon text-lg";
-      saveStateToPermanentMemory();
-    });
-
-    // Force save confirmation hook button trigger
-    document.getElementById('manualSaveBtn').addEventListener('click', () => {
-      saveStateToPermanentMemory();
-      alert('Your state preferences have been successfully locked in permanent memory!');
-    });
-
-    /* ==========================================================================
-       SUBMODULE ENGINES
-       ========================================================================== */
-
-    // VIDEO PLAYER ENGINE
+    // Main Engine For File Stream Operations 
     function setupVideoDragAndDropEngine() {
       const zone = document.getElementById('videoDropZone');
       const input = document.getElementById('videoFileInput');
 
+      // Click to choose file fallback implementation
       zone.addEventListener('click', () => input.click());
-      zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('border-indigo-500'); });
-      zone.addEventListener('dragleave', () => zone.classList.remove('border-indigo-500'));
+
+      // Visually highlight drop area boundary when hovering over the zone
+      zone.addEventListener('dragover', (e) => { 
+        e.preventDefault(); 
+        zone.classList.add('border-indigo-500', 'bg-indigo-50/30', 'dark:bg-indigo-950/20'); 
+      });
+
+      // Clear boundary highlight styling rules when leaving drop zone region
+      zone.addEventListener('dragleave', () => {
+        zone.className = "border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-xl p-12 text-center bg-slate-50 dark:bg-slate-900/50 hover:border-indigo-500 transition cursor-pointer";
+      });
+
+      // Handle item drop parsing actions
       zone.addEventListener('drop', (e) => {
         e.preventDefault();
-        zone.classList.remove('border-indigo-500');
-        if (e.dataTransfer.files.length) playRawLocalVideoBlob(e.dataTransfer.files);
+        zone.className = "border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-xl p-12 text-center bg-slate-50 dark:bg-slate-900/50 hover:border-indigo-500 transition cursor-pointer";
+        if (e.dataTransfer.files.length) {
+          playRawLocalVideoBlob(e.dataTransfer.files);
+        }
       });
+
+      // Handle raw file input manual selections
       input.addEventListener('change', (e) => {
-        if (e.target.files.length) playRawLocalVideoBlob(e.target.files);
+        if (e.target.files.length) {
+          playRawLocalVideoBlob(e.target.files);
+        }
       });
     }
 
+    // Instantly renders local video object URL stream arrays directly inside the screen container
     function playRawLocalVideoBlob(files) {
-      const url = URL.createObjectURL(files[0]);
+      const videoFile = files[0];
+      // Generate a temporary browser RAM blob token link pointer instead of uploading to a remote web server
+      const blobUrl = URL.createObjectURL(videoFile);
       const container = document.getElementById('videoPlaybackWrapper');
-      container.innerHTML = `<video src="${url}" controls class="w-full h-full object-contain"></video>`;
+      
+      // Inject standard clean media controls layout structure dynamically
+      container.innerHTML = `<video src="${blobUrl}" controls autoplay class="w-full h-full object-contain focus:outline-none"></video>`;
       container.classList.remove('hidden');
+      
+      // Smoothly scroll down view screen space to focus presentation frames directly
+      container.scrollIntoView({ behavior: 'smooth' });
     }
-
-    // Ultra-reliable YouTube URL extract handler
-    function getYouTubeId(url) {
-      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-      const match = url.match(regExp);
-      return (match && match[2].length === 11) ? match[2] : null;
-    }
-
+  </script>
+</body>
+</html>
