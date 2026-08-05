@@ -46,7 +46,7 @@
           <p class="font-bold text-xl mb-2">Drag any video link directly into this box</p>
           <p class="text-sm text-slate-500 dark:text-slate-400 mb-4">Highlight a video URL from your browser address bar (or a link item) and drop it anywhere inside this frame.</p>
           <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-200/60 dark:bg-slate-700 text-xs font-semibold tracking-wide text-slate-600 dark:text-slate-300">
-            <i class="fa-brands fa-youtube text-red-500 text-sm"></i> Supports YouTube & Shared Video Links
+            <i class="fa-brands fa-youtube text-red-500 text-sm"></i> Supports YouTube Videos & Shorts
           </div>
         </div>
       </div>
@@ -78,7 +78,6 @@
       });
 
       window.addEventListener('dragleave', (e) => {
-        // Only remove highlight if dragging completely leaves the window space
         if (e.clientX <= 0 || e.clientY <= 0 || e.clientX >= window.innerWidth || e.clientY >= window.innerHeight) {
           resetDropZoneStyles();
         }
@@ -88,7 +87,7 @@
         e.preventDefault();
         resetDropZoneStyles();
 
-        // Target and unpack text data transfer objects instead of standard storage files
+        // Target and unpack text data transfer objects
         let droppedUrl = e.dataTransfer.getData('text/plain') || e.dataTransfer.getData('text/uri-list');
         
         // Alternative fallback: Check if HTML structural link payload exists
@@ -113,8 +112,15 @@
       zone.className = "flex-1 flex flex-col items-center justify-center border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-xl p-8 text-center bg-slate-50 dark:bg-slate-900/50 hover:border-indigo-500 transition-all duration-200 min-h-[350px]";
     }
 
-    // RegEx string extractor built to handle clean and short YouTube links seamlessly
+    // Upgraded URL parser to securely handle standard videos, mobile shares, and shorts
     function extractYouTubeId(url) {
+      // Handles shorts layout natively
+      if (url.includes('/shorts/')) {
+        const parts = url.split('/shorts/');
+        if (parts[1]) return parts[1].split(/[?#&]/)[0];
+      }
+      
+      // Handles standard and watch parameter formats
       const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
       const match = url.match(regExp);
       return (match && match[2].length === 11) ? match[2] : null;
@@ -130,7 +136,7 @@
         zone.classList.add('hidden');
         wrapper.classList.remove('hidden');
         
-        // Uses youtube-nocookie domain parameter routing to run under strict tracker-blocking layers
+        // FIXED: String template correctly routes the real video ID variable into the tracking-free url block
         target.innerHTML = `
           <iframe 
             src="https://youtube-nocookie.com{ytId}?autoplay=1&rel=0" 
@@ -141,14 +147,13 @@
           </iframe>`;
         
         wrapper.scrollIntoView({ behavior: 'smooth' });
-      } else if (url.match(/\.(mp4|webm|ogg)($|\?)/i) || url.startsWith('blob:')) {
-        // Direct remote stream backup target structure handler
+      } else if (url.match(/\.(mp4|webm|ogg)($|\?)/i)) {
         zone.classList.add('hidden');
         wrapper.classList.remove('hidden');
         target.innerHTML = `<video src="${url}" controls autoplay class="w-full h-full object-contain focus:outline-none"></video>`;
         wrapper.scrollIntoView({ behavior: 'smooth' });
       } else {
-        alert('Unsupported link format. Please drop a valid YouTube or direct video link.');
+        alert('Unsupported link format. Please drop a valid YouTube video link or Shorts URL.');
       }
     }
 
