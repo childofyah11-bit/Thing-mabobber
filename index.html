@@ -26,7 +26,7 @@
   <!-- Checkered Dashed Top Border -->
   <div class="top-dashed-border w-full"></div>
 
-  <!-- Header Header -->
+  <!-- Header Navigation -->
   <header class="bg-white border-b border-slate-200 dark:bg-slate-800 dark:border-slate-700 shadow-sm sticky top-0 z-50">
     <div class="max-w-4xl mx-auto px-4">
       <div class="flex items-center justify-between py-3">
@@ -36,7 +36,7 @@
           <span>Thing-mabobber</span>
         </div>
 
-        <!-- Global Action Utilities Quickbar -->
+        <!-- Global Utilities Quickbar -->
         <div class="flex items-center space-x-3">
           <button id="themeToggle" class="p-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-700" title="Toggle Light/Dark Theme">
             <i id="themeIcon" class="fa-solid fa-moon text-lg"></i>
@@ -51,7 +51,6 @@
       <div class="flex space-x-2 py-2 border-t border-slate-100 dark:border-slate-700 text-sm font-medium">
         <button onclick="switchTab('videos')" id="tab-videos" class="tab-btn px-4 py-2 rounded-md bg-indigo-600 text-white flex items-center space-x-1"><i class="fa-solid fa-clapperboard"></i> <span>Videos</span></button>
         <button onclick="switchTab('qrcode')" id="tab-qrcode" class="tab-btn px-4 py-2 rounded-md text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700 flex items-center space-x-1"><i class="fa-solid fa-qrcode"></i> <span>QR Code</span></button>
-        <button onclick="switchTab('password')" id="tab-password" class="tab-btn px-4 py-2 rounded-md text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700 flex items-center space-x-1"><i class="fa-solid fa-key"></i> <span>Password</span></button>
       </div>
     </div>
   </header>
@@ -79,26 +78,13 @@
 
     <!-- TAB 2: QR CODE GENERATOR -->
     <div id="content-qrcode" class="tab-content">
-      <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 text-center space-y-4">
-        <h2 class="text-xl font-bold text-left mb-2 flex items-center gap-2"><i class="fa-solid fa-qrcode text-indigo-500"></i> QR Code Generator</h2>
-        <input type="text" id="qrTextInput" oninput="generateQrCode()" placeholder="Type text or a web link to create QR code automatically..." class="w-full px-4 py-2 border rounded-lg bg-transparent border-slate-300 dark:border-slate-600 outline-none focus:border-indigo-500">
-        <div class="flex justify-center p-4 bg-white rounded-lg shadow-inner inline-block mx-auto">
-          <img id="qrImageElement" src="https://qrserver.com" alt="QR Code" class="w-40 h-40 object-contain">
-        </div>
-      </div>
-    </div>
-
-    <!-- TAB 3: PASSWORD GENERATOR -->
-    <div id="content-password" class="tab-content">
       <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-4">
-        <h2 class="text-xl font-bold flex items-center gap-2"><i class="fa-solid fa-shield-halved text-indigo-500"></i> Cryptographic Password Generator</h2>
-        <div class="flex gap-2">
-          <input type="text" id="passOutput" readonly class="flex-1 px-4 py-2 border rounded-lg bg-slate-50 dark:bg-slate-900 border-slate-300 dark:border-slate-600 font-mono text-center font-bold tracking-wider select-all outline-none">
-          <button onclick="createRandomPassString()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-4 py-2 rounded-lg transition" title="Regenerate"><i class="fa-solid fa-rotate"></i></button>
-        </div>
-        <div class="flex items-center justify-between">
-          <label class="text-sm font-medium">Character Length: <span id="passLenLabel" class="font-bold">16</span></label>
-          <input type="range" id="passLengthSlider" min="8" max="32" value="16" oninput="document.getElementById('passLenLabel').innerText=this.value; createRandomPassString()" class="w-1/2 accent-indigo-600">
+        <h2 class="text-xl font-bold flex items-center gap-2"><i class="fa-solid fa-qrcode text-indigo-500"></i> QR Code Generator</h2>
+        <input type="text" id="qrTextInput" oninput="generateQrCode()" placeholder="Type text or a web link to create QR code automatically..." class="w-full px-4 py-2 border rounded-lg bg-transparent border-slate-300 dark:border-slate-600 outline-none focus:border-indigo-500">
+        <div class="flex justify-center">
+          <div class="p-4 bg-white rounded-lg shadow-inner border border-slate-100">
+            <img id="qrImageElement" src="https://qrserver.com" alt="QR Code" class="w-40 h-40 object-contain">
+          </div>
         </div>
       </div>
     </div>
@@ -106,13 +92,13 @@
   </main>
 
   <script>
-    const STORAGE_KEY = 'thing_mabobber_minimized_state';
+    const STORAGE_KEY = 'thing_mabobber_final_state';
 
-    // Application data state structure layer
+    // Core state manager
     let appState = {
       darkMode: false,
       lastQrText: 'ThingMabobber',
-      lastPasswordLength: 16
+      lastVideoUrl: ''
     };
 
     window.addEventListener('DOMContentLoaded', () => {
@@ -120,8 +106,7 @@
       setupVideoDragAndDropEngine();
     });
 
-    // Tab system toggle matrix
-    type = "text/javascript"
+    // Tab switcher layout tool
     function switchTab(tabId) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -135,31 +120,32 @@
     // Save configurations permanently down into LocalStorage
     function saveStateToPermanentMemory() {
       appState.lastQrText = document.getElementById('qrTextInput').value;
-      appState.lastPasswordLength = document.getElementById('passLengthSlider').value;
+      appState.lastVideoUrl = document.getElementById('videoUrlInput').value;
       localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
     }
 
-    // Pull settings and configs out of memory layer
+    // Pull configurations back on layout launch
     function loadStateFromPermanentMemory() {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
         try { appState = JSON.parse(stored); } catch (e) { console.error(e); }
       }
 
-      // Rehydrate Dark/Light theme mode settings
+      // Rehydrate dark mode
       if (appState.darkMode) {
         document.documentElement.classList.add('dark');
         document.getElementById('themeIcon').className = "fa-solid fa-sun text-lg";
       }
 
-      // Rehydrate QR Generator
+      // Rehydrate QR Generator data entries
       document.getElementById('qrTextInput').value = appState.lastQrText || '';
       generateQrCode();
 
-      // Rehydrate Password Generator values
-      document.getElementById('passLengthSlider').value = appState.lastPasswordLength || 16;
-      document.getElementById('passLenLabel').innerText = appState.lastPasswordLength || 16;
-      createRandomPassString();
+      // Rehydrate Video URL box
+      if (appState.lastVideoUrl) {
+        document.getElementById('videoUrlInput').value = appState.lastVideoUrl;
+        loadVideoStream();
+      }
     }
 
     // Theme switching component handler
@@ -173,3 +159,42 @@
     // Force save confirmation hook button trigger
     document.getElementById('manualSaveBtn').addEventListener('click', () => {
       saveStateToPermanentMemory();
+      alert('Your state preferences have been successfully locked in permanent memory!');
+    });
+
+    /* ==========================================================================
+       SUBMODULE ENGINES
+       ========================================================================== */
+
+    // VIDEO PLAYER ENGINE
+    function setupVideoDragAndDropEngine() {
+      const zone = document.getElementById('videoDropZone');
+      const input = document.getElementById('videoFileInput');
+
+      zone.addEventListener('click', () => input.click());
+      zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('border-indigo-500'); });
+      zone.addEventListener('dragleave', () => zone.classList.remove('border-indigo-500'));
+      zone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        zone.classList.remove('border-indigo-500');
+        if (e.dataTransfer.files.length) playRawLocalVideoBlob(e.dataTransfer.files);
+      });
+      input.addEventListener('change', (e) => {
+        if (e.target.files.length) playRawLocalVideoBlob(e.target.files);
+      });
+    }
+
+    function playRawLocalVideoBlob(files) {
+      const url = URL.createObjectURL(files[0]);
+      const container = document.getElementById('videoPlaybackWrapper');
+      container.innerHTML = `<video src="${url}" controls class="w-full h-full object-contain"></video>`;
+      container.classList.remove('hidden');
+    }
+
+    // Ultra-reliable YouTube URL extract handler
+    function getYouTubeId(url) {
+      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+      const match = url.match(regExp);
+      return (match && match[2].length === 11) ? match[2] : null;
+    }
+
