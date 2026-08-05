@@ -3,61 +3,252 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Thing-mabobber</title>
-  <!-- Tailwind CSS via CDN -->
-  <script src="https://tailwindcss.com"></script>
-  <!-- FontAwesome Icons -->
-  <link rel="stylesheet" href="https://cloudflare.com">
+  <title>Thing-mabobber Privacy Player</title>
+  <!-- Pure custom CSS style layer - completely independent of external CDNs -->
   <style>
-    /* Purple and white checkered dashed border accent at the top */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #0f172a;
+      color: #f8fafc;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Purple and white checkered dashed top accent line */
     .top-dashed-border {
       height: 6px;
       background-image: linear-gradient(90deg, #6366f1 50%, transparent 50%), linear-gradient(90deg, transparent 50%, #ffffff 50%);
       background-size: 20px 3px, 20px 3px;
       background-repeat: repeat-x;
       background-position: top left, bottom left;
+      width: 100%;
+    }
+
+    header {
+      background-color: #1e293b;
+      border-b: 1px solid #334155;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .brand-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #818cf8;
+      letter-spacing: -0.025em;
+    }
+
+    .brand-subtitle {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      font-family: monospace;
+    }
+
+    main {
+      flex: 1;
+      max-width: 900px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .app-card {
+      flex: 1;
+      background-color: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 16px;
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Huge glowing drop receiver target grid zone */
+    .drop-zone-container {
+      flex: 1;
+      border: 2px dashed #475569;
+      background-color: #0f172a;
+      border-radius: 12px;
+      padding: 40px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      transition: all 0.25s ease;
+      min-height: 380px;
+    }
+
+    .drop-zone-container.hovering {
+      border-color: #6366f1;
+      background-color: rgba(99, 102, 241, 0.1);
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+    }
+
+    .main-instruction {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+
+    .sub-instruction {
+      font-size: 0.95rem;
+      color: #94a3b8;
+      max-width: 460px;
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+
+    /* Alternate backup url controller layout block */
+    .input-row-box {
+      width: 100%;
+      max-width: 500px;
+      display: flex;
+      gap: 8px;
+      background-color: #1e293b;
+      padding: 6px;
+      border-radius: 10px;
+      border: 1px solid #475569;
+    }
+
+    .url-text-field {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #ffffff;
+      font-size: 0.9rem;
+      padding: 8px 12px;
+    }
+
+    .url-text-field::placeholder {
+      color: #64748b;
+    }
+
+    .action-submit-btn {
+      background-color: #4f46e5;
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .action-submit-btn:hover {
+      background-color: #4338ca;
+    }
+
+    .privacy-tag {
+      margin-top: 20px;
+      font-size: 0.75rem;
+      background-color: #334155;
+      color: #cbd5e1;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+
+    /* Zero-Trace video stream playback elements shadow block */
+    .playback-display-window {
+      display: none;
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background-color: #000000;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #334155;
+    }
+
+    .playback-display-window.active {
+      display: block;
+    }
+
+    .close-window-handle {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      z-index: 100;
+      background-color: rgba(0, 0, 0, 0.7);
+      color: #ffffff;
+      border: 1px solid #334155;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+
+    .close-window-handle:hover {
+      background-color: #ef4444;
+      border-color: #f87171;
+    }
+
+    iframe, video {
+      width: 100%;
+      height: 100%;
+      border: none;
     }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col dark:bg-slate-900 dark:text-slate-100">
+<body>
 
-  <!-- Checkered Dashed Top Border -->
-  <div class="top-dashed-border w-full"></div>
+  <!-- Checkered Dashed Top Line Accent Decorator -->
+  <div class="top-dashed-border"></div>
 
-  <!-- Header Section -->
-  <header class="bg-white border-b border-slate-200 dark:bg-slate-800 dark:border-slate-700 shadow-sm z-50">
-    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-      <div class="flex items-center space-x-2 font-bold text-xl text-indigo-600 dark:text-indigo-400">
-        <i class="fa-solid fa-crosshairs text-red-500 animate-pulse"></i>
-        <span>Thing-mabobber</span>
-      </div>
-      <div class="text-xs text-slate-400 font-mono">No-Trace Privacy Embedder</div>
-    </div>
+  <!-- Header Header -->
+  <header>
+    <div class="brand-title">🎯 Thing-mabobber</div>
+    <div class="brand-subtitle">Zero-Trace Privacy Video Core</div>
   </header>
 
-  <!-- Main Full-Screen Workspace Drop Area -->
-  <main class="flex-1 max-w-6xl w-full mx-auto px-4 py-6 flex flex-col">
-    <div class="flex-1 flex flex-col bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+  <!-- Interactive App Body Platform Grid -->
+  <main>
+    <div class="app-card">
       
-      <!-- Expanded Link Drag & Drop Receiver Box Container -->
-      <div id="videoDropZone" class="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-xl p-8 text-center bg-slate-50 dark:bg-slate-900/50 hover:border-indigo-500 transition-all duration-200 min-h-[350px]">
-        <div class="max-w-md pointer-events-none">
-          <i class="fa-solid fa-link text-5xl text-indigo-500 mb-4 animate-bounce"></i>
-          <p class="font-bold text-xl mb-2">Drag any video link directly into this box</p>
-          <p class="text-sm text-slate-500 dark:text-slate-400 mb-4">Highlight a video URL from your browser address bar (or a link item) and drop it anywhere inside this frame.</p>
-          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-200/60 dark:bg-slate-700 text-xs font-semibold tracking-wide text-slate-600 dark:text-slate-300">
-            <i class="fa-brands fa-youtube text-red-500 text-sm"></i> Supports YouTube Videos & Shorts
-          </div>
+      <!-- Drag & Drop Interface Core Target -->
+      <div id="videoDropZone" class="drop-zone-container">
+        <div class="main-instruction">Drag video link here</div>
+        <div class="sub-instruction">
+          Grab any video URL from your browser address bar and drop it directly in this box, or paste it right below to stream without leaving tracking logs.
         </div>
+
+        <!-- Alternate Input Row Box Link Input UI Component -->
+        <div class="input-row-box" onclick="event.stopPropagation();">
+          <input type="text" id="manualUrlField" placeholder="Or paste your video address link right here..." class="url-text-field">
+          <button onclick="handleManualUrlTrigger()" class="action-submit-btn">Play</button>
+        </div>
+
+        <div class="privacy-tag">🛡️ NO CODES OR TRACKING COOKIES SAVED</div>
       </div>
 
-      <!-- Private Tracking-Free Video Presentation Display Container -->
-      <div id="videoPlaybackWrapper" class="mt-4 hidden aspect-video w-full rounded-xl overflow-hidden bg-black shadow-inner border border-slate-900 relative">
-        <!-- Floating Close Reset Action Handle Button -->
-        <button onclick="unloadVideoPlayer()" class="absolute top-4 right-4 z-50 bg-black/70 hover:bg-red-600 text-white w-10 h-10 rounded-full flex items-center justify-center transition shadow-md group" title="Clear Player / Return to Drop Box">
-          <i class="fa-solid fa-xmark text-lg group-hover:scale-110 transition"></i>
-        </button>
-        <div id="playerFrameTarget" class="w-full h-full"></div>
+      <!-- Private Sandbox Playback Player Display Context Frame -->
+      <div id="videoPlaybackWrapper" class="playback-display-window">
+        <button onclick="destroyActiveVideoInstance()" class="close-window-handle" title="Close player and erase session tracking window">✕</button>
+        <div id="playerFrameTarget" style="width:100%; height:100%;"></div>
       </div>
 
     </div>
@@ -65,103 +256,84 @@
 
   <script>
     window.addEventListener('DOMContentLoaded', () => {
-      setupLinkDragAndDropEngine();
+      initializeDragAndDropReceiver();
     });
 
-    function setupLinkDragAndDropEngine() {
+    function initializeDragAndDropReceiver() {
       const zone = document.getElementById('videoDropZone');
 
-      // Intercept and allow drops over the tracking container box frame
+      // Prevent native browser page-hijacking loops when items hover over workspace regions
       window.addEventListener('dragover', (e) => {
         e.preventDefault();
-        zone.classList.add('border-indigo-500', 'bg-indigo-50/40', 'dark:bg-indigo-950/20');
+        zone.classList.add('hovering');
       });
 
       window.addEventListener('dragleave', (e) => {
         if (e.clientX <= 0 || e.clientY <= 0 || e.clientX >= window.innerWidth || e.clientY >= window.innerHeight) {
-          resetDropZoneStyles();
+          zone.classList.remove('hovering');
         }
       });
 
       window.addEventListener('drop', (e) => {
         e.preventDefault();
-        resetDropZoneStyles();
+        zone.classList.remove('hovering');
 
-        // Target and unpack text data transfer objects
-        let droppedUrl = e.dataTransfer.getData('text/plain') || e.dataTransfer.getData('text/uri-list');
+        // Capture data text values out of mouse dragging payloads
+        let incomingLink = e.dataTransfer.getData('text/plain') || e.dataTransfer.getData('text/uri-list');
         
-        // Alternative fallback: Check if HTML structural link payload exists
-        if (!droppedUrl) {
-          const htmlData = e.dataTransfer.getData('text/html');
-          if (htmlData) {
-            const matches = htmlData.match(/href="([^"]+)"/);
-            if (matches && matches[1]) droppedUrl = matches[1];
+        // Backup HTML format checking parameters logic loop hook
+        if (!incomingLink) {
+          const rawHtml = e.dataTransfer.getData('text/html');
+          if (rawHtml) {
+            const anchorMatches = rawHtml.match(/href="([^"]+)"/);
+            if (anchorMatches && anchorMatches[1]) incomingLink = anchorMatches[1];
           }
         }
 
-        if (droppedUrl) {
-          parseAndEmbedVideoUrl(droppedUrl.trim());
-        } else {
-          alert('Could not detect a clean video web link. Make sure to drag the text string link selection.');
+        if (incomingLink) {
+          processAndPlayStreamUrl(incomingLink.trim());
         }
       });
     }
 
-    function resetDropZoneStyles() {
-      const zone = document.getElementById('videoDropZone');
-      zone.className = "flex-1 flex flex-col items-center justify-center border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-xl p-8 text-center bg-slate-50 dark:bg-slate-900/50 hover:border-indigo-500 transition-all duration-200 min-h-[350px]";
+    function handleManualUrlTrigger() {
+      const field = document.getElementById('manualUrlField');
+      const targetUrl = field.value.trim();
+      if (targetUrl) {
+        processAndPlayStreamUrl(targetUrl);
+        field.value = '';
+      }
     }
 
-    // Upgraded URL parser to securely handle standard videos, mobile shares, and shorts
-    function extractYouTubeId(url) {
-      // Handles shorts layout natively
-      if (url.includes('/shorts/')) {
-        const parts = url.split('/shorts/');
-        if (parts[1]) return parts[1].split(/[?#&]/)[0];
+    // Upgraded link regex parsing mechanism tracking patterns safely
+    function filterVideoCode(inputString) {
+      if (inputString.includes('/shorts/')) {
+        const structuralSegments = inputString.split('/shorts/');
+        if (structuralSegments[1]) return structuralSegments[1].split(/[?#&]/)[0];
       }
       
-      // Handles standard and watch parameter formats
-      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-      const match = url.match(regExp);
-      return (match && match[2].length === 11) ? match[2] : null;
+      const classicRegExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+      const resultsMatch = inputString.match(classicRegExp);
+      return (resultsMatch && resultsMatch[2].length === 11) ? resultsMatch[2] : null;
     }
 
-    function parseAndEmbedVideoUrl(url) {
-      const ytId = extractYouTubeId(url);
-      const zone = document.getElementById('videoDropZone');
-      const wrapper = document.getElementById('videoPlaybackWrapper');
-      const target = document.getElementById('playerFrameTarget');
+    function processAndPlayStreamUrl(finalUrl) {
+      const extractedVideoId = filterVideoCode(finalUrl);
+      const dropZoneElement = document.getElementById('videoDropZone');
+      const playerWrapperElement = document.getElementById('videoPlaybackWrapper');
+      const contentMountTarget = document.getElementById('playerFrameTarget');
 
-      if (ytId) {
-        zone.classList.add('hidden');
-        wrapper.classList.remove('hidden');
+      if (extractedVideoId) {
+        dropZoneElement.style.display = 'none';
+        playerWrapperElement.classList.add('active');
         
-        // FIXED: String template correctly routes the real video ID variable into the tracking-free url block
-        target.innerHTML = `
+        // Employs strict youtube-nocookie.com configuration profile layers
+        contentMountTarget.innerHTML = `
           <iframe 
-            src="https://youtube-nocookie.com{ytId}?autoplay=1&rel=0" 
-            class="w-full h-full" 
-            frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            src="https://youtube-nocookie.com{extractedVideoId}?autoplay=1&rel=0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
             allowfullscreen>
           </iframe>`;
-        
-        wrapper.scrollIntoView({ behavior: 'smooth' });
-      } else if (url.match(/\.(mp4|webm|ogg)($|\?)/i)) {
-        zone.classList.add('hidden');
-        wrapper.classList.remove('hidden');
-        target.innerHTML = `<video src="${url}" controls autoplay class="w-full h-full object-contain focus:outline-none"></video>`;
-        wrapper.scrollIntoView({ behavior: 'smooth' });
-      } else {
-        alert('Unsupported link format. Please drop a valid YouTube video link or Shorts URL.');
-      }
-    }
-
-    function unloadVideoPlayer() {
-      document.getElementById('playerFrameTarget').innerHTML = '';
-      document.getElementById('videoPlaybackWrapper').classList.add('hidden');
-      document.getElementById('videoDropZone').classList.remove('hidden');
-    }
-  </script>
-</body>
-</html>
+      } else if (finalUrl.match(/\.(mp4|webm|ogg)($|\?)/i)) {
+        dropZoneElement.style.display = 'none';
+        playerWrapperElement.classList.add('active');
