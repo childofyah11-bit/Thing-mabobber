@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Thing-mabobber: Your all-in-one offline-capable productivity suite">
+    <meta name="theme-color" content="#6366f1">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎯</text></svg>">
+    <title>Thing-mabobber</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            transition: background 0.3s;
+        }
+
+        body.dark-mode {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: rgba(255, 255, 255, 0.95);
+            border-right: 2px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+
+        .dark-mode .sidebar {
+            background: rgba(30, 30, 30, 0.95);
+            border-right-color: #444;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid #f0f0f0;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .dark-mode .sidebar-header {
+            border-bottom-color: #444;
+        }
+
+        .nav-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 12px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .nav-btn {
+            padding: 12px 16px;
+            background: #f5f5f5;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            text-align: left;
+        }
+
+        .nav-btn:hover {
+            background: #e8e8e8;
+            transform: translateX(4px);
+        }
+
+        .nav-btn.active {
+            background: #6366f1;
+            color: white;
+            border-color: #6366f1;
+        }
+
+        .dark-mode .nav-btn {
+            background: #333;
+        }
+
+        .dark-mode .nav-btn:hover {
+            background: #444;
+        }
+
+        .sidebar-footer {
+            padding: 12px;
+            border-top: 2px solid #f0f0f0;
+            display: flex;
+            gap: 8px;
+        }
+
+        .dark-mode .sidebar-footer {
+            border-top-color: #444;
+        }
+
+        .icon-btn {
+            flex: 1;
+            padding: 10px;
+            background: #f5f5f5;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.2s;
+        }
+
+        .dark-mode .icon-btn {
+            background: #333;
+        }
+
+        .icon-btn:hover {
+            background: #e8e8e8;
+            transform: scale(1.05);
+        }
+
+        .dark-mode .icon-btn:hover {
+            background: #444;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: white;
+        }
+
+        .dark-mode .main-content {
+            background: #1a1a1a;
+        }
+
+        .toolbar {
+            padding: 12px 20px;
+            background: #f9f9f9;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .dark-mode .toolbar {
+            background: #252525;
+            border-bottom-color: #444;
+        }
+
+        .content-area {
+            flex: 1;
+            overflow: auto;
+            padding: 20px;
+        }
+
+        .tool-section {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .tool-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Video Player Styles */
+        .video-drop-zone {
+            border: 3px dashed #6366f1;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #f8f9ff;
+        }
+
+        .dark-mode .video-drop-zone {
+            background: #2a2a3e;
+            border-color: #7c8ff0;
+        }
+
+        .video-drop-zone.drag-over {
+            background: #e8ebff;
+            border-color: #5558d0;
+            transform: scale(1.02);
+        }
+
+        .dark-mode .video-drop-zone.drag-over {
+            background: #3a3a5e;
+        }
+
+        video {
+            width: 100%;
+            max-width: 800px;
+            border-radius: 8px;
+            background: black;
+            margin-bottom: 20px;
+        }
+
+        /* Notes Styles */
+        .notes-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+        }
+
+        .note-card {
+            background: #fff9e6;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dark-mode .note-card {
+            background: #3a3a2e;
+        }
+
+        .note-card textarea {
+            flex: 1;
+            border: none;
+            resize: none;
+            padding: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            background: transparent;
+            color: inherit;
+        }
+
+        .note-card textarea:focus {
+            outline: 2px solid #6366f1;
+            border-radius: 4px;
+        }
+
+        .note-card-footer {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            background: #6366f1;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: #5558d0;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn.danger {
+            background: #ef4444;
+        }
+
+        .btn.danger:hover {
+            background: #dc2626;
+        }
+
+        .btn.secondary {
+            background: #6b7280;
+        }
+
+        .btn.secondary:hover {
+            background: #4b5563;
+        }
+
+        /* Todo Styles */
+        .todo-input-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .todo-input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .dark-mode .todo-input {
+            background: #2a2a2a;
+            border-color: #444;
+            color: #e0e0e0;
+        }
+
+        .todo-input:focus {
+            outline: none;
+            border-color: #6366f1;
+        }
+
+        .todo-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .todo-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #f5f5f5;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .dark-mode .todo-item {
+            background: #2a2a2a;
+        }
+
+        .todo-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .todo-item.completed {
+            opacity: 0.6;
+        }
+
+        .todo-item.completed span {
+            text-decoration: line-through;
+        }
+
+        /* Calculator Styles */
+        .calculator {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .calc-display {
+            width: 100%;
+            padding: 16px;
+            font-size: 28px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            text-align: right;
+            background: #f9f9f9;
+        }
+
+        .dark-mode .calc-display {
+            background: #2a2a2a;
+            border-color: #444;
+            color: #e0e0e0;
+        }
+
+        .calc-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .calc-btn {
+            padding: 16px;
+            font-size: 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background: #f0f0f0;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .dark-mode .calc-btn {
+            background: #333;
+            color: #e0e0e0;
+        }
+
+        .calc-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .calc-btn.operator {
+            background: #6366f1;
+            color: white;
+        }
+
+        .calc-btn.equals {
+            background: #10b981;
+            color: white;
+            grid-column: span 2;
+        }
+
+        /* Timer/Stopwatch Styles */
+        .timer-display {
+            font-size: 48px;
+            font-weight: bold;
+            text-align: center;
+            margin: 30px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .timer-controls {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Text Tools Styles */
+        .text-tool-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            min-height: 300px;
+            resize: vertical;
+        }
+
+        .dark-mode .text-tool-textarea {
+            background: #2a2a2a;
+            border-color: #444;
+            color: #e0e0e0;
+        }
+
+        .text-tool-textarea:focus {
+            outline: none;
+            border-color: #6366f1;
+        }
+
+        .text-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .stat-card {
+            background: #f0f0f0;
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .dark-mode .stat-card {
+            background: #2a2a2a;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #6366f1;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .dark-mode .stat-label {
+            color: #999;
+        }
+
+        /* Image Viewer */
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .image-item {
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .image-item:hover {
+            transform: scale(1.05);
+        }
+
+        .image-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        /* Color Picker */
+        .color-picker-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .color-box {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .color-box:hover {
+            transform: scale(1.1);
+        }
+
+        .color-box.selected {
+            border-color: #333;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .dark-mode ::-webkit-scrollbar-track {
+            background: #2a2a2a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #6366f1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #5558d0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                max-height: 200px;
+            }
+
+            .nav-buttons {
+                flex-direction: row;
+                overflow-x: auto;
+            }
+
+            .nav-btn {
+                white-space: nowrap;
+            }
+
+            .notes-container {
+                grid-template-columns: 1fr;
+            }
+
+            .calc-buttons {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .timer-display {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <div class="sidebar">
+            <div class="sidebar-header">🎯 Thing-mabobber</div>
+            <div class="nav-buttons">
+                <button class="nav-btn active" data-tool="video">🎬 Video Player</button>
+                <button class="nav-btn" data-tool="notes">📝 Notes</button>
+                <button class="nav-btn" data-tool="todos">✅ Todos</button>
+                <button class="nav-btn" data-tool="calculator">🧮 Calculator</button>
+                <button class="nav-btn" data-tool="timer">⏱️ Timer</button>
+                <button class="nav-btn" data-tool="text-tools">📄 Text Tools</button>
+                <button class="nav-btn" data-tool="images">🖼️ Images</button>
+                <button class="nav-btn" data-tool="colors">🎨 Colors</button>
+                <button class="nav-btn" data-tool="json">📦 JSON Viewer</button>
+                <button class="nav-btn" data-tool="qr">📱 QR Code</button>
+            </div>
+            <div class="sidebar-footer">
+                <button class="icon-btn" id="theme-toggle" title="Toggle dark mode">🌙</button>
+                <button class="icon-btn" id="clear-all" title="Clear all data">🗑️</button>
+                <button class="icon-btn" id="info-btn" title="About">ℹ️</button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="toolbar">
+                <span id="current-tool-name">Video Player</span>
+            </div>
+
+            <div class="content-area">
+                <!-- Video Player Tool -->
+                <div id="video" class="tool-section active">
+                    <div class="video-drop-zone" id="video-drop-zone">
+                        <h2>📹 Drop videos here or click to select</h2>
+                        <p style="margin-top: 12px; opacity: 0.7;">Supported: MP4, WebM, OGG, and more</p>
+                        <input type="file" id="video-input" accept="video/*" style="display: none;">
+                    </div>
+                    <div id="video-container"></div>
+                </div>
+
+                <!-- Notes Tool -->
+                <div id="notes" class="tool-section">
+                    <button class="btn" style="margin-bottom: 16px;" id="add-note-btn">+ Add Note</button>
+                    <div class="notes-container" id="notes-container"></div>
+                </div>
+
+                <!-- Todos Tool -->
+                <div id="todos" class="tool-section">
+                    <div class="todo-input-group">
+                        <input type="text" class="todo-input" id="todo-input" placeholder="Add a new task...">
+                        <button class="btn" id="add-todo-btn">Add</button>
+                    </div>
+                    <div class="todo-list" id="todo-list"></div>
+                </div>
+
+                <!-- Calculator Tool -->
+                <div id="calculator" class="tool-section">
+                    <div class="calculator">
+                        <input type="text" class="calc-display" id="calc-display" readonly>
+                        <div class="calc-buttons" id="calc-buttons"></div>
+                    </div>
+                </div>
+
+                <!-- Timer Tool -->
+                <div id="timer" class="tool-section">
+                    <div style="max-width: 600px; margin: 0 auto;">
+                        <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+                            <button class="btn" id="timer-tab" data-tab="timer">⏱️ Timer</button>
+                            <button class="btn secondary" id="stopwatch-tab" data-tab="stopwatch">⏰ Stopwatch</button>
+                        </div>
+                        <div id="timer-mode" class="timer-mode-active">
+                            <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+                                <input type="number" id="timer-minutes" class="todo-input" placeholder="Minutes" min="0" value="1">
+                                <input type="number" id="timer-seconds" class="todo-input" placeholder="Seconds" min="0" max="59" value="0">
+                            </div>
+                        </div>
+                        <div class="timer-display" id="timer-display">00:00</div>
+                        <div class="timer-controls">
+                            <button class="btn" id="timer-start-btn">Start</button>
+                            <button class="btn secondary" id="timer-pause-btn" disabled>Pause</button>
+                            <button class="btn danger" id="timer-reset-btn">Reset</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Text Tools -->
+                <div id="text-tools" class="tool-section">
+                    <textarea class="text-tool-textarea" id="text-input" placeholder="Enter text to analyze..."></textarea>
+                    <div class="text-stats" id="text-stats">
+                        <div class="stat-card">
+                            <div class="stat-value" id="char-count">0</div>
+                            <div class="stat-label">Characters</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="word-count">0</div>
+                            <div class="stat-label">Words</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="line-count">0</div>
+                            <div class="stat-label">Lines</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap;">
+                        <button class="btn" id="uppercase-btn">UPPERCASE</button>
+                        <button class="btn" id="lowercase-btn">lowercase</button>
+                        <button class="btn" id="reverse-btn">Reverse</button>
+                        <button class="btn" id="copy-btn">Copy</button>
+                    </div>
+                </div>
+
+                <!-- Images Tool -->
+                <div id="images" class="tool-section">
+                    <div style="margin-bottom: 16px;">
+                        <input type="file" id="image-input" accept="image/*" multiple style="display: none;">
+                        <button class="btn" id="add-image-btn">📂 Add Images</button>
+                    </div>
+                    <div class="image-grid" id="image-grid"></div>
+                </div>
+
+                <!-- Color Picker Tool -->
+                <div id="colors" class="tool-section">
+                    <h3 style="margin-bottom: 16px;">Select a Color</h3>
+                    <input type="color" id="color-input" style="width: 100%; height: 100px; border: none; border-radius: 8px; cursor: pointer;">
+                    <div style="margin-top: 16px; padding: 16px; background: #f0f0f0; border-radius: 8px; text-align: center;">
+                        <div id="color-display" style="width: 100%; height: 100px; border-radius: 8px; margin-bottom: 12px; background: #6366f1;"></div>
+                        <div style="font-family: monospace; font-size: 16px; font-weight: bold;">
+                            HEX: <span id="hex-value">#6366f1</span>
+                        </div>
+                        <div style="font-family: monospace; margin-top: 8px;">
+                            RGB: <span id="rgb-value">rgb(99, 102, 241)</span>
+                        </div>
+                        <button class="btn" id="copy-color-btn" style="margin-top: 12px;">Copy Color</button>
+                    </div>
+                </div>
+
+                <!-- JSON Viewer -->
+                <div id="json" class="tool-section">
+                    <textarea class="text-tool-textarea" id="json-input" placeholder="Paste JSON here..."></textarea>
+                    <div id="json-output" style="margin-top: 16px; padding: 16px; background: #f0f0f0; border-radius: 8px; overflow: auto; max-height: 400px; font-family: monospace; font-size: 12px;"></div>
+                </div>
+
+                <!-- QR Code Generator -->
+                <div id="qr" class="tool-section">
+                    <input type="text" class="todo-input" id="qr-input" placeholder="Enter text to generate QR code...">
+                    <div id="qr-output" style="margin-top: 16px; text-align: center;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
