@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Thing-mabobber Privacy Player</title>
-  <!-- Pure custom CSS style layer - completely independent of external CDNs -->
   <style>
     * {
       box-sizing: border-box;
@@ -33,7 +32,7 @@
 
     header {
       background-color: #1e293b;
-      border-b: 1px solid #334155;
+      border-bottom: 1px solid #334155;
       padding: 16px 24px;
       display: flex;
       justify-content: space-between;
@@ -262,7 +261,7 @@
     function initializeDragAndDropReceiver() {
       const zone = document.getElementById('videoDropZone');
 
-      // Prevent native browser page-hijacking loops when items hover over workspace regions
+      window.addEventListener('draggrid', (e) => { e.preventDefault(); });
       window.addEventListener('dragover', (e) => {
         e.preventDefault();
         zone.classList.add('hovering');
@@ -278,10 +277,8 @@
         e.preventDefault();
         zone.classList.remove('hovering');
 
-        // Capture data text values out of mouse dragging payloads
         let incomingLink = e.dataTransfer.getData('text/plain') || e.dataTransfer.getData('text/uri-list');
         
-        // Backup HTML format checking parameters logic loop hook
         if (!incomingLink) {
           const rawHtml = e.dataTransfer.getData('text/html');
           if (rawHtml) {
@@ -305,15 +302,18 @@
       }
     }
 
-    // Upgraded link regex parsing mechanism tracking patterns safely
-    function filterVideoCode(inputString) {
-      if (inputString.includes('/shorts/')) {
-        const structuralSegments = inputString.split('/shorts/');
-        if (structuralSegments[1]) return structuralSegments[1].split(/[?#&]/)[0];
+    function filterVideoCode(url) {
+      // Securely pull link IDs out of shorts links cleanly
+      if (url.includes('/shorts/')) {
+        const structuralSegments = url.split('/shorts/');
+        if (structuralSegments[1]) {
+          return structuralSegments[1].split(/[?#&]/)[0];
+        }
       }
       
+      // Standard watch links, sharing links, and embeds parser
       const classicRegExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-      const resultsMatch = inputString.match(classicRegExp);
+      const resultsMatch = url.match(classicRegExp);
       return (resultsMatch && resultsMatch[2].length === 11) ? resultsMatch[2] : null;
     }
 
@@ -327,7 +327,6 @@
         dropZoneElement.style.display = 'none';
         playerWrapperElement.classList.add('active');
         
-        // Employs strict youtube-nocookie.com configuration profile layers
         contentMountTarget.innerHTML = `
           <iframe 
             src="https://youtube-nocookie.com{extractedVideoId}?autoplay=1&rel=0" 
@@ -337,3 +336,11 @@
       } else if (finalUrl.match(/\.(mp4|webm|ogg)($|\?)/i)) {
         dropZoneElement.style.display = 'none';
         playerWrapperElement.classList.add('active');
+        contentMountTarget.innerHTML = `<video src="${finalUrl}" controls autoplay></video>`;
+      } else {
+        alert('Invalid video target. Make sure it is a correct link format.');
+      }
+    }
+
+    function destroyActiveVideoInstance() {
+      document.getElementById('playerFrameTarget').innerHTML = '';
