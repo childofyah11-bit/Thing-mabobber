@@ -182,7 +182,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Video Player Styles */
         .video-drop-zone {
             border: 3px dashed #6366f1;
             border-radius: 12px;
@@ -191,6 +190,7 @@
             cursor: pointer;
             transition: all 0.2s;
             background: #f8f9ff;
+            margin-bottom: 20px;
         }
 
         .dark-mode .video-drop-zone {
@@ -208,15 +208,16 @@
             background: #3a3a5e;
         }
 
-        video {
+        video, iframe {
             width: 100%;
             max-width: 800px;
+            height: 450px;
             border-radius: 8px;
             background: black;
             margin-bottom: 20px;
+            border: none;
         }
 
-        /* Notes Styles */
         .notes-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -245,6 +246,7 @@
             font-family: inherit;
             background: transparent;
             color: inherit;
+            min-height: 150px;
         }
 
         .note-card textarea:focus {
@@ -292,7 +294,6 @@
             background: #4b5563;
         }
 
-        /* Todo Styles */
         .todo-input-group {
             display: flex;
             gap: 8px;
@@ -352,7 +353,6 @@
             text-decoration: line-through;
         }
 
-        /* Calculator Styles */
         .calculator {
             max-width: 400px;
             margin: 0 auto;
@@ -413,7 +413,6 @@
             grid-column: span 2;
         }
 
-        /* Timer/Stopwatch Styles */
         .timer-display {
             font-size: 48px;
             font-weight: bold;
@@ -429,7 +428,6 @@
             flex-wrap: wrap;
         }
 
-        /* Text Tools Styles */
         .text-tool-textarea {
             width: 100%;
             padding: 12px;
@@ -486,7 +484,6 @@
             color: #999;
         }
 
-        /* Image Viewer */
         .image-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -499,6 +496,7 @@
             cursor: pointer;
             transition: transform 0.2s;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
         }
 
         .image-item:hover {
@@ -511,32 +509,72 @@
             object-fit: cover;
         }
 
-        /* Color Picker */
-        .color-picker-grid {
+        .unit-converter-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-            gap: 12px;
-            margin-bottom: 16px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
         }
 
-        .color-box {
-            width: 60px;
-            height: 60px;
+        .converter-card {
+            background: #f0f0f0;
+            padding: 16px;
             border-radius: 8px;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: all 0.2s;
         }
 
-        .color-box:hover {
-            transform: scale(1.1);
+        .dark-mode .converter-card {
+            background: #2a2a2a;
         }
 
-        .color-box.selected {
-            border-color: #333;
+        .converter-card input {
+            width: 100%;
+            padding: 8px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
         }
 
-        /* Scrollbar */
+        .dark-mode .converter-card input {
+            background: #1a1a1a;
+            color: #e0e0e0;
+            border-color: #444;
+        }
+
+        .password-strength {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .dark-mode .password-strength {
+            background: #444;
+        }
+
+        .strength-bar {
+            height: 100%;
+            background: #ef4444;
+            width: 0%;
+            transition: all 0.3s;
+        }
+
+        .strength-bar.medium {
+            background: #f59e0b;
+            width: 50%;
+        }
+
+        .strength-bar.strong {
+            background: #10b981;
+            width: 75%;
+        }
+
+        .strength-bar.very-strong {
+            background: #3b82f6;
+            width: 100%;
+        }
+
         ::-webkit-scrollbar {
             width: 8px;
         }
@@ -582,10 +620,6 @@
                 grid-template-columns: 1fr;
             }
 
-            .calc-buttons {
-                grid-template-columns: repeat(4, 1fr);
-            }
-
             .timer-display {
                 font-size: 36px;
             }
@@ -594,52 +628,57 @@
 </head>
 <body>
     <div class="container">
-        <!-- Sidebar Navigation -->
         <div class="sidebar">
             <div class="sidebar-header">🎯 Thing-mabobber</div>
             <div class="nav-buttons">
-                <button class="nav-btn active" data-tool="video">🎬 Video Player</button>
+                <button class="nav-btn active" data-tool="video">🎬 Videos</button>
                 <button class="nav-btn" data-tool="notes">📝 Notes</button>
                 <button class="nav-btn" data-tool="todos">✅ Todos</button>
                 <button class="nav-btn" data-tool="calculator">🧮 Calculator</button>
                 <button class="nav-btn" data-tool="timer">⏱️ Timer</button>
-                <button class="nav-btn" data-tool="text-tools">📄 Text Tools</button>
+                <button class="nav-btn" data-tool="text-tools">📄 Text</button>
                 <button class="nav-btn" data-tool="images">🖼️ Images</button>
                 <button class="nav-btn" data-tool="colors">🎨 Colors</button>
-                <button class="nav-btn" data-tool="json">📦 JSON Viewer</button>
+                <button class="nav-btn" data-tool="json">📦 JSON</button>
                 <button class="nav-btn" data-tool="qr">📱 QR Code</button>
+                <button class="nav-btn" data-tool="converter">🔄 Converter</button>
+                <button class="nav-btn" data-tool="password">🔐 Password</button>
+                <button class="nav-btn" data-tool="markdown">📋 Markdown</button>
+                <button class="nav-btn" data-tool="url">🔗 URL Tools</button>
+                <button class="nav-btn" data-tool="base64">🔀 Base64</button>
             </div>
             <div class="sidebar-footer">
                 <button class="icon-btn" id="theme-toggle" title="Toggle dark mode">🌙</button>
-                <button class="icon-btn" id="clear-all" title="Clear all data">🗑️</button>
+                <button class="icon-btn" id="backup-btn" title="Backup data">💾</button>
                 <button class="icon-btn" id="info-btn" title="About">ℹ️</button>
             </div>
         </div>
 
-        <!-- Main Content -->
         <div class="main-content">
             <div class="toolbar">
                 <span id="current-tool-name">Video Player</span>
             </div>
 
             <div class="content-area">
-                <!-- Video Player Tool -->
+                <!-- Video Player -->
                 <div id="video" class="tool-section active">
                     <div class="video-drop-zone" id="video-drop-zone">
-                        <h2>📹 Drop videos here or click to select</h2>
-                        <p style="margin-top: 12px; opacity: 0.7;">Supported: MP4, WebM, OGG, and more</p>
+                        <h2>📹 Drop videos or paste YouTube/URL</h2>
+                        <p style="margin-top: 12px; opacity: 0.7;">Supports: MP4, YouTube links, WebM, and more</p>
                         <input type="file" id="video-input" accept="video/*" style="display: none;">
                     </div>
+                    <input type="text" class="todo-input" id="youtube-url" placeholder="Paste YouTube URL or video link..." style="margin-bottom: 12px;">
+                    <button class="btn" id="youtube-load-btn">Load Video</button>
                     <div id="video-container"></div>
                 </div>
 
-                <!-- Notes Tool -->
+                <!-- Notes -->
                 <div id="notes" class="tool-section">
                     <button class="btn" style="margin-bottom: 16px;" id="add-note-btn">+ Add Note</button>
                     <div class="notes-container" id="notes-container"></div>
                 </div>
 
-                <!-- Todos Tool -->
+                <!-- Todos -->
                 <div id="todos" class="tool-section">
                     <div class="todo-input-group">
                         <input type="text" class="todo-input" id="todo-input" placeholder="Add a new task...">
@@ -648,7 +687,7 @@
                     <div class="todo-list" id="todo-list"></div>
                 </div>
 
-                <!-- Calculator Tool -->
+                <!-- Calculator -->
                 <div id="calculator" class="tool-section">
                     <div class="calculator">
                         <input type="text" class="calc-display" id="calc-display" readonly>
@@ -656,14 +695,14 @@
                     </div>
                 </div>
 
-                <!-- Timer Tool -->
+                <!-- Timer -->
                 <div id="timer" class="tool-section">
                     <div style="max-width: 600px; margin: 0 auto;">
                         <div style="display: flex; gap: 12px; margin-bottom: 16px;">
-                            <button class="btn" id="timer-tab" data-tab="timer">⏱️ Timer</button>
-                            <button class="btn secondary" id="stopwatch-tab" data-tab="stopwatch">⏰ Stopwatch</button>
+                            <button class="btn" id="timer-tab">⏱️ Timer</button>
+                            <button class="btn secondary" id="stopwatch-tab">⏰ Stopwatch</button>
                         </div>
-                        <div id="timer-mode" class="timer-mode-active">
+                        <div id="timer-mode">
                             <div style="display: flex; gap: 12px; margin-bottom: 16px;">
                                 <input type="number" id="timer-minutes" class="todo-input" placeholder="Minutes" min="0" value="1">
                                 <input type="number" id="timer-seconds" class="todo-input" placeholder="Seconds" min="0" max="59" value="0">
@@ -680,8 +719,8 @@
 
                 <!-- Text Tools -->
                 <div id="text-tools" class="tool-section">
-                    <textarea class="text-tool-textarea" id="text-input" placeholder="Enter text to analyze..."></textarea>
-                    <div class="text-stats" id="text-stats">
+                    <textarea class="text-tool-textarea" id="text-input" placeholder="Enter text..."></textarea>
+                    <div class="text-stats">
                         <div class="stat-card">
                             <div class="stat-value" id="char-count">0</div>
                             <div class="stat-label">Characters</div>
@@ -703,7 +742,7 @@
                     </div>
                 </div>
 
-                <!-- Images Tool -->
+                <!-- Images -->
                 <div id="images" class="tool-section">
                     <div style="margin-bottom: 16px;">
                         <input type="file" id="image-input" accept="image/*" multiple style="display: none;">
@@ -712,7 +751,7 @@
                     <div class="image-grid" id="image-grid"></div>
                 </div>
 
-                <!-- Color Picker Tool -->
+                <!-- Colors -->
                 <div id="colors" class="tool-section">
                     <h3 style="margin-bottom: 16px;">Select a Color</h3>
                     <input type="color" id="color-input" style="width: 100%; height: 100px; border: none; border-radius: 8px; cursor: pointer;">
@@ -728,16 +767,102 @@
                     </div>
                 </div>
 
-                <!-- JSON Viewer -->
+                <!-- JSON -->
                 <div id="json" class="tool-section">
                     <textarea class="text-tool-textarea" id="json-input" placeholder="Paste JSON here..."></textarea>
                     <div id="json-output" style="margin-top: 16px; padding: 16px; background: #f0f0f0; border-radius: 8px; overflow: auto; max-height: 400px; font-family: monospace; font-size: 12px;"></div>
                 </div>
 
-                <!-- QR Code Generator -->
+                <!-- QR Code -->
                 <div id="qr" class="tool-section">
                     <input type="text" class="todo-input" id="qr-input" placeholder="Enter text to generate QR code...">
+                    <button class="btn" id="qr-generate-btn" style="margin-top: 12px; width: 100%;">Generate QR Code</button>
                     <div id="qr-output" style="margin-top: 16px; text-align: center;"></div>
+                </div>
+
+                <!-- Unit Converter -->
+                <div id="converter" class="tool-section">
+                    <div class="unit-converter-grid">
+                        <div class="converter-card">
+                            <h4>Temperature</h4>
+                            <input type="number" id="temp-c" placeholder="°C">
+                            <input type="number" id="temp-f" placeholder="°F">
+                            <input type="number" id="temp-k" placeholder="K">
+                        </div>
+                        <div class="converter-card">
+                            <h4>Length (m, ft, km)</h4>
+                            <input type="number" id="length-m" placeholder="Meters">
+                            <input type="number" id="length-ft" placeholder="Feet">
+                            <input type="number" id="length-km" placeholder="Kilometers">
+                        </div>
+                        <div class="converter-card">
+                            <h4>Weight (kg, lb, g)</h4>
+                            <input type="number" id="weight-kg" placeholder="Kilograms">
+                            <input type="number" id="weight-lb" placeholder="Pounds">
+                            <input type="number" id="weight-g" placeholder="Grams">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Password Generator -->
+                <div id="password" class="tool-section">
+                    <div style="max-width: 500px;">
+                        <label style="display: flex; gap: 8px; margin: 8px 0;">
+                            <input type="checkbox" id="pwd-uppercase" checked> Uppercase (A-Z)
+                        </label>
+                        <label style="display: flex; gap: 8px; margin: 8px 0;">
+                            <input type="checkbox" id="pwd-lowercase" checked> Lowercase (a-z)
+                        </label>
+                        <label style="display: flex; gap: 8px; margin: 8px 0;">
+                            <input type="checkbox" id="pwd-numbers" checked> Numbers (0-9)
+                        </label>
+                        <label style="display: flex; gap: 8px; margin: 8px 0;">
+                            <input type="checkbox" id="pwd-symbols" checked> Symbols (!@#$%)
+                        </label>
+                        <div style="margin: 16px 0;">
+                            <label>Password Length: <input type="number" id="pwd-length" value="16" min="4" max="128" style="width: 80px;"></label>
+                        </div>
+                        <button class="btn" id="pwd-generate-btn" style="width: 100%;">Generate Password</button>
+                        <div id="pwd-output" style="margin-top: 16px; padding: 16px; background: #f0f0f0; border-radius: 8px; font-family: monospace; text-align: center;">
+                            <div id="pwd-display" style="font-size: 18px; font-weight: bold; margin-bottom: 12px;">Click Generate</div>
+                            <div class="password-strength"><div class="strength-bar"></div></div>
+                            <button class="btn" id="pwd-copy-btn" style="margin-top: 12px; width: 100%;">Copy Password</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Markdown Previewer -->
+                <div id="markdown" class="tool-section">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; height: 500px;">
+                        <textarea class="text-tool-textarea" id="markdown-input" placeholder="Enter Markdown..." style="height: 100%;"></textarea>
+                        <div id="markdown-output" style="border: 2px solid #e0e0e0; border-radius: 8px; padding: 16px; overflow: auto; background: #f0f0f0;"></div>
+                    </div>
+                </div>
+
+                <!-- URL Tools -->
+                <div id="url" class="tool-section">
+                    <div style="margin-bottom: 20px;">
+                        <h4>URL Encoder/Decoder</h4>
+                        <textarea class="text-tool-textarea" id="url-input" placeholder="Enter URL or text..." style="height: 150px;"></textarea>
+                        <div style="display: flex; gap: 8px; margin-top: 12px;">
+                            <button class="btn" id="url-encode-btn" style="flex: 1;">Encode URL</button>
+                            <button class="btn" id="url-decode-btn" style="flex: 1;">Decode URL</button>
+                        </div>
+                        <div id="url-output" style="margin-top: 16px; padding: 16px; background: #f0f0f0; border-radius: 8px; font-family: monospace; word-break: break-all;"></div>
+                    </div>
+                </div>
+
+                <!-- Base64 -->
+                <div id="base64" class="tool-section">
+                    <div style="margin-bottom: 20px;">
+                        <h4>Base64 Encoder/Decoder</h4>
+                        <textarea class="text-tool-textarea" id="base64-input" placeholder="Enter text..." style="height: 150px;"></textarea>
+                        <div style="display: flex; gap: 8px; margin-top: 12px;">
+                            <button class="btn" id="base64-encode-btn" style="flex: 1;">Encode</button>
+                            <button class="btn" id="base64-decode-btn" style="flex: 1;">Decode</button>
+                        </div>
+                        <div id="base64-output" style="margin-top: 16px; padding: 16px; background: #f0f0f0; border-radius: 8px; font-family: monospace; word-break: break-all;"></div>
+                    </div>
                 </div>
             </div>
         </div>
