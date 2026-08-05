@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Thing-mabobber</title>
-  <!-- Tailwind CSS via CDN for rapid utility-first modern UI styling -->
+  <!-- Tailwind CSS via CDN -->
   <script src="https://tailwindcss.com"></script>
-  <!-- FontAwesome Icons for clean dashboard visual styling -->
+  <!-- FontAwesome for clean icons -->
   <link rel="stylesheet" href="https://cloudflare.com">
   <style>
-    /* Custom purple and white checkered dashed-line border accent at the top */
+    /* Purple and white checkered dashed border accent at the top */
     .top-dashed-border {
       height: 6px;
       background-image: linear-gradient(90deg, #6366f1 50%, transparent 50%), linear-gradient(90deg, transparent 50%, #ffffff 50%);
@@ -17,23 +17,20 @@
       background-repeat: repeat-x;
       background-position: top left, bottom left;
     }
-    /* Hidden utility helper */
     .tab-content { display: none; }
     .tab-content.active { display: block; }
-    /* Custom calculator styling */
-    .calc-btn { @apply bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 p-4 rounded text-xl font-semibold transition; }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans min-h-screen transition-colors duration-200 dark:bg-slate-900 dark:text-slate-100">
 
-  <!-- Checkered Dashed Top Border Line -->
+  <!-- Checkered Dashed Top Border -->
   <div class="top-dashed-border w-full"></div>
 
-  <!-- Main Navbar Header Container -->
+  <!-- Header Header -->
   <header class="bg-white border-b border-slate-200 dark:bg-slate-800 dark:border-slate-700 shadow-sm sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4">
-      <div class="flex items-center justify-between py-3 flex-wrap gap-3">
-        <!-- Application Branding Title -->
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="flex items-center justify-between py-3">
+        <!-- Branding Title -->
         <div class="flex items-center space-x-2 font-bold text-xl text-indigo-600 dark:text-indigo-400">
           <i class="fa-solid fa-crosshairs text-red-500 animate-pulse"></i>
           <span>Thing-mabobber</span>
@@ -47,58 +44,132 @@
           <button id="manualSaveBtn" class="p-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-700" title="Force Save State">
             <i class="fa-solid fa-floppy-disk text-lg"></i>
           </button>
-          <button id="infoBtn" class="p-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-700" title="Application Info">
-            <i class="fa-solid fa-circle-info text-lg"></i>
-          </button>
         </div>
       </div>
 
-      <!-- Scannable Multi-tool Horizontal Tabs Selection Track Container -->
-      <div class="flex space-x-1 overflow-x-auto no-scrollbar py-2 border-t border-slate-100 dark:border-slate-700 text-sm font-medium">
-        <button onclick="switchTab('videos')" id="tab-videos" class="tab-btn px-3 py-2 rounded-md bg-indigo-600 text-white flex items-center space-x-1 whitespace-nowrap"><i class="fa-solid fa-clapperboard"></i> <span>Videos</span></button>
-        <button onclick="switchTab('notes')" id="tab-notes" class="tab-btn px-3 py-2 rounded-md text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700 flex items-center space-x-1 whitespace-nowrap"><i class="fa-solid fa-pen-to-square"></i> <span>Notes</span></button>
-        <button onclick="switchTab('todos')" id="tab-todos" class="tab-btn px-3 py-2 rounded-md text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700 flex items-center space-x-1 whitespace-nowrap"><i class="fa-solid fa-square-check"></i> <span>Todos</span></button>
-        <button onclick="switchTab('calculator')" id="tab-calculator" class="tab-btn px-3 py-2 rounded-md text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700 flex items-center space-x-1 whitespace-nowrap"><i class="fa-solid fa-calculator"></i> <span>Calculator</span></button>
-        <button onclick="switchTab('timer')" id="tab-timer" class="tab-btn px-3 py-2 rounded-md text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700 flex items-center space-x-1 whitespace-nowrap"><i class="fa-solid fa-stopwatch"></i> <span>Timer</span></button>
-        <button onclick="switchTab('text')" id="tab-text" class="tab-btn px-3 py-2 rounded-md text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700 flex items-center space-x-1 whitespace-nowrap"><i class="fa-solid fa-file-lines"></i> <span>Text</span></button>
-        <button onclick="switchTab('images')" id="tab-images" class="tab-btn px-3 py-2 rounded-md text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700 flex items-center space-x-1 whitespace-nowrap"><i class="fa-solid fa-image"></i> <span>Images</span></button>
-        <button onclick="switchTab('colors')" id="tab-colors" class="tab-btn px-3 py-2 rounded-md text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700 flex items-center space-x-1 whitespace-nowrap"><i class="fa-solid fa-palette"></i> <span>Colors</span></button>
-        <button onclick="switchTab('json')" id="tab-json" class="tab-btn px-3 py-2 rounded-md text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700 flex items-center space-x-1 whitespace-nowrap"><i class="fa-solid fa-box-open"></i> <span>JSON</span></button>
-        <button onclick="switchTab('qrcode')" id="tab-qrcode" class="tab-btn px-3 py-2 rounded-md text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700 flex items-center space-x-1 whitespace-nowrap"><i class="fa-solid fa-qrcode"></i> <span>QR Code</span></button>
-        <button onclick="switchTab('converter')" id="tab-converter" class="tab-btn px-3 py-2 rounded-md text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700 flex items-center space-x-1 whitespace-nowrap"><i class="fa-solid fa-arrow-rotate-left"></i> <span>Converter</span></button>
-        <button onclick="switchTab('password')" id="tab-password" class="tab-btn px-3 py-2 rounded-md text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700 flex items-center space-x-1 whitespace-nowrap"><i class="fa-solid fa-key"></i> <span>Password</span></button>
-        <button onclick="switchTab('markdown')" id="tab-markdown" class="tab-btn px-3 py-2 rounded-md text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700 flex items-center space-x-1 whitespace-nowrap"><i class="fa-solid fa-clipboard"></i> <span>Markdown</span></button>
-        <button onclick="switchTab('urltools')" id="tab-urltools" class="tab-btn px-3 py-2 rounded-md text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700 flex items-center space-x-1 whitespace-nowrap"><i class="fa-solid fa-link"></i> <span>URL Tools</span></button>
-        <button onclick="switchTab('base64')" id="tab-base64" class="tab-btn px-3 py-2 rounded-md text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700 flex items-center space-x-1 whitespace-nowrap"><i class="fa-solid fa-shuffle"></i> <span>Base64</span></button>
+      <!-- Navigation Selection Track -->
+      <div class="flex space-x-2 py-2 border-t border-slate-100 dark:border-slate-700 text-sm font-medium">
+        <button onclick="switchTab('videos')" id="tab-videos" class="tab-btn px-4 py-2 rounded-md bg-indigo-600 text-white flex items-center space-x-1"><i class="fa-solid fa-clapperboard"></i> <span>Videos</span></button>
+        <button onclick="switchTab('qrcode')" id="tab-qrcode" class="tab-btn px-4 py-2 rounded-md text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700 flex items-center space-x-1"><i class="fa-solid fa-qrcode"></i> <span>QR Code</span></button>
+        <button onclick="switchTab('password')" id="tab-password" class="tab-btn px-4 py-2 rounded-md text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700 flex items-center space-x-1"><i class="fa-solid fa-key"></i> <span>Password</span></button>
       </div>
     </div>
   </header>
 
-  <!-- Main View Container Layout Matrix -->
-  <main class="max-w-7xl mx-auto px-4 py-8">
+  <!-- Main View Container -->
+  <main class="max-w-4xl mx-auto px-4 py-8">
 
     <!-- TAB 1: VIDEOS MODULE -->
     <div id="content-videos" class="tab-content active space-y-6">
       <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
-        <h2 class="text-xl font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-video text-indigo-500"></i> Video Player Workspace</h2>
+        <h2 class="text-xl font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-video text-indigo-500"></i> Video Player</h2>
         <div id="videoDropZone" class="border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-xl p-8 text-center bg-slate-50 dark:bg-slate-900/50 hover:border-indigo-500 transition cursor-pointer">
           <i class="fa-solid fa-video-camera text-4xl text-slate-400 mb-2"></i>
           <p class="font-semibold text-lg">Drop videos here or paste a YouTube/Direct URL stream link below</p>
-          <p class="text-xs text-slate-400 mt-1">Supports MP4, YouTube Embeds, WebM formats natively</p>
+          <p class="text-xs text-slate-400 mt-1">Supports MP4, YouTube embeds, WebM formats natively</p>
           <input type="file" id="videoFileInput" accept="video/*" class="hidden">
         </div>
         <div class="mt-4 flex gap-2">
-          <input type="text" id="videoUrlInput" placeholder="Paste YouTube URL or video direct stream link..." class="flex-1 px-4 py-2 border rounded-lg bg-transparent border-slate-300 dark:border-slate-600 outline-none focus:border-indigo-500">
+          <input type="text" id="videoUrlInput" placeholder="Paste YouTube URL or video link..." class="flex-1 px-4 py-2 border rounded-lg bg-transparent border-slate-300 dark:border-slate-600 outline-none focus:border-indigo-500">
           <button onclick="loadVideoStream()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-6 py-2 rounded-lg transition">Load Video</button>
         </div>
-        <div id="videoPlaybackWrapper" class="mt-6 hidden aspect-video w-full rounded-xl overflow-hidden bg-black shadow-inner">
-          <!-- Dynamic media frame container elements inserted by engine -->
+        <div id="videoPlaybackWrapper" class="mt-6 hidden aspect-video w-full rounded-xl overflow-hidden bg-black shadow-inner"></div>
+      </div>
+    </div>
+
+    <!-- TAB 2: QR CODE GENERATOR -->
+    <div id="content-qrcode" class="tab-content">
+      <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 text-center space-y-4">
+        <h2 class="text-xl font-bold text-left mb-2 flex items-center gap-2"><i class="fa-solid fa-qrcode text-indigo-500"></i> QR Code Generator</h2>
+        <input type="text" id="qrTextInput" oninput="generateQrCode()" placeholder="Type text or a web link to create QR code automatically..." class="w-full px-4 py-2 border rounded-lg bg-transparent border-slate-300 dark:border-slate-600 outline-none focus:border-indigo-500">
+        <div class="flex justify-center p-4 bg-white rounded-lg shadow-inner inline-block mx-auto">
+          <img id="qrImageElement" src="https://qrserver.com" alt="QR Code" class="w-40 h-40 object-contain">
         </div>
       </div>
     </div>
 
-    <!-- TAB 2: NOTES MODULE -->
-    <div id="content-notes" class="tab-content space-y-4">
-      <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
-        <h2 class="text-xl font-bold mb-4"><i class="fa-solid fa-pen-to-square text-indigo-500"></i> Persistent Scratchpad Notes</h2>
-        <textarea id="notesArea" oninput="autoSaveData()" placeholder="Type whatever you want here... It saves automatically to permanent storage memory!" class="w-full h-80 p-4 border rounded-xl bg-transparent border-slate-300 dark:border-slate-600 focus:border-indigo-500 outline-none resize-y font-mono text-sm leading-relaxed"></textarea>
+    <!-- TAB 3: PASSWORD GENERATOR -->
+    <div id="content-password" class="tab-content">
+      <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-4">
+        <h2 class="text-xl font-bold flex items-center gap-2"><i class="fa-solid fa-shield-halved text-indigo-500"></i> Cryptographic Password Generator</h2>
+        <div class="flex gap-2">
+          <input type="text" id="passOutput" readonly class="flex-1 px-4 py-2 border rounded-lg bg-slate-50 dark:bg-slate-900 border-slate-300 dark:border-slate-600 font-mono text-center font-bold tracking-wider select-all outline-none">
+          <button onclick="createRandomPassString()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-4 py-2 rounded-lg transition" title="Regenerate"><i class="fa-solid fa-rotate"></i></button>
+        </div>
+        <div class="flex items-center justify-between">
+          <label class="text-sm font-medium">Character Length: <span id="passLenLabel" class="font-bold">16</span></label>
+          <input type="range" id="passLengthSlider" min="8" max="32" value="16" oninput="document.getElementById('passLenLabel').innerText=this.value; createRandomPassString()" class="w-1/2 accent-indigo-600">
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    const STORAGE_KEY = 'thing_mabobber_minimized_state';
+
+    // Application data state structure layer
+    let appState = {
+      darkMode: false,
+      lastQrText: 'ThingMabobber',
+      lastPasswordLength: 16
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadStateFromPermanentMemory();
+      setupVideoDragAndDropEngine();
+    });
+
+    // Tab system toggle matrix
+    type = "text/javascript"
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.className = "tab-btn px-4 py-2 rounded-md text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700 flex items-center space-x-1";
+      });
+
+      document.getElementById(`content-${tabId}`).classList.add('active');
+      document.getElementById(`tab-${tabId}`).className = "tab-btn px-4 py-2 rounded-md bg-indigo-600 text-white flex items-center space-x-1";
+    }
+
+    // Save configurations permanently down into LocalStorage
+    function saveStateToPermanentMemory() {
+      appState.lastQrText = document.getElementById('qrTextInput').value;
+      appState.lastPasswordLength = document.getElementById('passLengthSlider').value;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+    }
+
+    // Pull settings and configs out of memory layer
+    function loadStateFromPermanentMemory() {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        try { appState = JSON.parse(stored); } catch (e) { console.error(e); }
+      }
+
+      // Rehydrate Dark/Light theme mode settings
+      if (appState.darkMode) {
+        document.documentElement.classList.add('dark');
+        document.getElementById('themeIcon').className = "fa-solid fa-sun text-lg";
+      }
+
+      // Rehydrate QR Generator
+      document.getElementById('qrTextInput').value = appState.lastQrText || '';
+      generateQrCode();
+
+      // Rehydrate Password Generator values
+      document.getElementById('passLengthSlider').value = appState.lastPasswordLength || 16;
+      document.getElementById('passLenLabel').innerText = appState.lastPasswordLength || 16;
+      createRandomPassString();
+    }
+
+    // Theme switching component handler
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      const isDark = document.documentElement.classList.toggle('dark');
+      appState.darkMode = isDark;
+      document.getElementById('themeIcon').className = isDark ? "fa-solid fa-sun text-lg" : "fa-solid fa-moon text-lg";
+      saveStateToPermanentMemory();
+    });
+
+    // Force save confirmation hook button trigger
+    document.getElementById('manualSaveBtn').addEventListener('click', () => {
+      saveStateToPermanentMemory();
